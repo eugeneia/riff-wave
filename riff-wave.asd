@@ -1,4 +1,4 @@
-;;;; System definition fo RIFF-WAVE.
+;;;; System definition for RIFF-WAVE.
 
 (defpackage riff-wave-asd
   (:documentation

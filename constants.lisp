@@ -21,3 +21,12 @@
 
 (defconstant +data-subchunk-id+ #x61746164
   "'data' header identifier.")
+
+(defconstant +header-size+ 36
+  "Size of header chunk.")
+
+(defconstant +8bit-max+ 255
+  "Maximum value for eight bit samples.")
+
+(defconstant +16bit-max-2c+ 32767
+  "Maximum value for 16 bit two's complement signed samples.")

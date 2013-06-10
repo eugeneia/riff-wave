@@ -2,15 +2,6 @@
 
 (in-package :riff-wave.write)
 
-(defconstant +header-size+ 36
-  "Size of header chunk.")
-
-(defconstant +8bit-max+ 255
-  "Maximum value for eight bit samples.")
-
-(defconstant +16bit-max-2c+ 32767
-  "Maximum value for 16 bit two's complement signed samples.")
-
 (defun write-wave-header (sample-rate sample-size n-channels length
 			  stream)
   "Write PCM WAVE file header to STREAM as specified by SAMPLE-RATE in

@@ -44,8 +44,22 @@
       ;; parameters.
       (values sample-rate sample-size n-channels length))))
 
+(defun sample-1 (sample)
+  "Return value for SAMPLE represented in one unsigned byte."
+  (1- (/ sample +8bit-max+ 1/2)))
+
+(defun sample-2 (sample)
+  "Return value for SAMPLE represented in two's complement of two byte
+size."
+  (/ (if (> sample +16bit-max-2c+)
+         ;; Negative
+         (- sample #.(expt 2 16)) ; two's complement: 2^bits-N
+         ;; Positive
+         sample)
+     +16bit-max-2c+))
+
 (defun read-sample (stream sample-size)
   "Read sample of SAMPLE-SIZE from STREAM."
-  (* 2 (ecase sample-size
-         (1 (/ (read-byte stream) +8bit-max+))
-         (2 (/ (read-bytes stream 2) +16bit-max-2c+ 2)))))
+  (ecase sample-size
+    (1 (sample-1 (read-byte stream)))
+    (2 (sample-2 (read-bytes stream 2)))))

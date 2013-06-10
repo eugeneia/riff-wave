@@ -52,5 +52,4 @@ SAMPLE-SIZE bytes to STREAM."
 	      (value (if (> 0 float-value)
 			 (ceiling float-value)
 			 (floor float-value))))
-	 (write-byte (ldb (byte 8 0) value) stream)
-	 (write-byte (ldb (byte 8 8) value) stream)))))
+         (write-bytes value 2 stream)))))

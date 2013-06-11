@@ -1,0 +1,2 @@
++ {RIFF-WAVE.READ} does not conform to the spec. It expects the 'fmt '
+subchunk to be the first chunk.

@@ -8,7 +8,11 @@
   (flet ((read-two-bytes ()
 	   (read-bytes stream 2))
          (read-four-bytes ()
-	   (read-bytes stream 4)))
+	   (read-bytes stream 4))
+         (skip-bytes (n)
+           (dotimes (i n)
+             (declare (ignore i))
+             (read-byte stream))))
     (let* ((riff-id
             (unless (= +riff-id+ (read-four-bytes))
               (error "RIFF magic number mismatch (!= #x~x)." +riff-id+)))
@@ -29,17 +33,18 @@
            (byte-rate (read-four-bytes))
            (block-alignment (read-two-bytes))
            (sample-size (/ (read-two-bytes) 8)) ; Stored in n-bits
-           (data-subchunk-id
-            (unless (= +data-subchunk-id+ (read-four-bytes))
-              (error "DATA subchunk magic number mismatch (!= #x~x)"
-                     +data-subchunk-id+)))
+           ;; Seek to data chunk.
+           (other-chunks (loop while (not (= +data-subchunk-id+
+                                             (read-four-bytes)))
+                            do (let ((chunk-size (read-four-bytes)))
+                                 (skip-bytes chunk-size))))
            ;; LENGTH is byte length divided by N-CHANNELS and
            ;; SAMPLE-SIZE.
            (length (/ (read-four-bytes) n-channels sample-size)))
       ;; Ignore superfluous header fields.
       (declare (ignore riff-id wave-id fmt-subchunk-id chunk-size
                        fmt-subchunk-size audio-format byte-rate
-                       block-alignment data-subchunk-id))
+                       block-alignment other-chunks))
       ;; STREAM should now be at the sample body. Return the sampling
       ;; parameters.
       (values sample-rate sample-size n-channels length))))

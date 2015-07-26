@@ -3,8 +3,41 @@
 (in-package :riff-wave.read)
 
 (defun read-wave-header (stream)
-  "Read WAVE header from STREAM and return sample-rate, sample-size,
-  n-channels and length."
+  "→ _sample-rate_, _sample-size_, _n-channels_, _length_
+
+   *Arguments and Values:*
+
+   _stream_—a _binary input stream_.
+
+   _sample-rate_—the sample rate in Hertz specified by the WAVE
+   header. Represented as a positive _integer_.
+
+   _sample-size_—the sample size specified by the WAVE header. May be be
+   1 or 2 indicating 8-bit or 16-bit samples respectively.
+
+   _n-channels_—the number of channels specified by the WAVE header.
+   Represented as a positive _integer_.
+
+   _length_—the contained number of samples per channel specified by the
+   WAVE header. Represented as an unsigned _integer_.
+
+   *Description:*
+
+   {read-wave-header} reads a PCM WAVE header at _stream_ and returns the
+   _sample-rate_, _sample-size_, _n-channels_, and _length_ of the WAVE
+   stream specified by the header. _Stream_ is advanced to the beginning
+   of the first sample and {read-sample} may be used to read _length_
+   times _n-samples_ of _sample-size_ from _stream_.
+
+   E.g. if a WAVE stream contains two channels and has a length of four,
+   then there should be eight samples in the stream, with each even
+   sample belonging to the first channel and each odd sample belonging to
+   the second channel of the stream.
+
+   *Exceptional Situations:*
+
+   Signals an error of _type_ {error} if _stream_ does not contain a
+   RIFF/WAVE header using the PCM audio format."
   (flet ((read-two-bytes ()
 	   (read-bytes stream 2))
          (read-four-bytes ()
@@ -64,7 +97,21 @@ size."
      +16bit-max-2c+))
 
 (defun read-sample (stream sample-size)
-  "Read sample of SAMPLE-SIZE from STREAM."
+  "→ _sample_
+
+  *Arguments and Values:*
+
+  _stream_—a _binary input stream_.
+
+  _sample-size_—the sample size of the WAVE _stream_.
+
+  _sample_—either an {(unsigned-byte 8)} or an {(unsigned-byte 16)}
+  depending on _sample-size_.
+
+  *Description:*
+
+  {read-sample} reads and returns a sample of _sample-size_ from
+  _stream_."
   (ecase sample-size
     (1 (sample-1 (read-byte stream)))
     (2 (sample-2 (read-bytes stream 2)))))

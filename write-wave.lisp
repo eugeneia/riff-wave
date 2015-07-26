@@ -4,9 +4,26 @@
 
 (defun write-wave-header (sample-rate sample-size n-channels length
 			  stream)
-  "Write PCM WAVE file header to STREAM as specified by SAMPLE-RATE in
-hertz, SAMPLE-SIZE in bytes, the number of channels N-CHANNELS and the
-number of samples LENGTH."
+  "*Arguments and Values:*
+
+   _sample-rate_—an {(unsigned-byte 32)} denoting the sample rate in
+   Hertz.
+
+   _sample-size_—one for 8-bit samples; Two for 16-bit samples.
+
+   _n-channels_—a positive _integer_ denoting the number of channels.
+
+   _length_—an unsigned _integer_ denoting the number of samples per
+   channel following the WAVE header.
+
+   _stream_—a _binary output stream_.
+
+   *Description:*
+
+   {write-wave-header} writes the PCM WAVE header specified by
+   _sample-rate_, _sample-size_, _n-channels_ and _length_ to
+   _stream_. {write-sample} should be used to write _n-channels_ times
+   _length_ samples of _sample-size_ to _stream_."
   (flet ((write-two-bytes (integer)
 	   (write-bytes integer 2 stream))
 	 (write-four-bytes (integer)
@@ -44,8 +61,17 @@ number of samples LENGTH."
       (values))))
 
 (defun write-sample (sample sample-size stream)
-  "Write SAMPLE (a number ranging from -1 to 1) represented by
-SAMPLE-SIZE bytes to STREAM."
+  "*Arguments and Values:*
+
+   _sample_—the sample value represented as a {(real -1 1)}.
+
+   _sample-size_—one to write an 8-bit sample; Two to write a 16-bit
+   sample.
+
+   _stream_—a _binary output stream_.
+
+   {write-sample} writes _sample_ encoded in _sample-size_ bytes to
+  _stream_."
   (ecase sample-size
     (1 (write-byte (ceiling (* (/ (1+ sample) 2) +8bit-max+)) stream))
     (2 (let* ((float-value (* sample +16bit-max-2c+))
